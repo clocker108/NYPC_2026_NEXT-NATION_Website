@@ -67,6 +67,9 @@ const BGM = {
     title: "Loading Screen Loop",
     author: "HaelDB",
     page: "https://opengameart.org/content/loading-screen-loop",
+    // 이 루프는 극도로 평탄(LRA~0.6)해서 mean -24로 맞추면 체감(LUFS)이 메뉴/게임(-22.3)보다
+    // ~2 LU 처져 유독 작게 들린다. peak가 -13dB로 헤드룸이 넉넉하므로 mean -22로 올려 맞춘다.
+    targetDb: -22,
   },
 };
 
@@ -139,9 +142,9 @@ for (const [id, spec] of Object.entries(SFX)) {
     filter: spec.filter,
   });
 }
-for (const id of Object.keys(BGM)) {
+for (const [id, spec] of Object.entries(BGM)) {
   convert(join(tmpDir, `${id}.ogg`), join(outDir, `${id}.mp3`), {
-    targetMeanDb: BGM_TARGET_MEAN_DB,
+    targetMeanDb: spec.targetDb ?? BGM_TARGET_MEAN_DB,
     mono: false,
     bitrateArgs: ["-b:a", "128k"],
   });
