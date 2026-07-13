@@ -1,0 +1,5 @@
+# Cloudflare Pages 헤더 — Pyodide 봇 워커의 SharedArrayBuffer에 필요한
+# cross-origin isolation. 모든 에셋이 same-origin이라 COEP로 깨지는 리소스 없음.
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp

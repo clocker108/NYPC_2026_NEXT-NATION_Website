@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+/* NEXT NATION 팔레트 — 공식 뷰어(다크 크롬 + 크림 맵) 기준.
+   Tailwind v4 @theme 토큰: bg-chrome, text-nred, border-chromeline 등으로 사용.
+   SVG(MapView)에서는 var(--color-nred)처럼 CSS 변수로 직접 참조. */
+@theme {
+  --color-chrome: #17181c; /* 패널/헤더 배경 */
+  --color-chrome2: #212228; /* 버튼/카드 배경 */
+  --color-chromeline: #33343c; /* 보더 */
+  --color-chromedim: #9a9ca6; /* 흐린 텍스트 */
+
+  --color-nred: #e04b3f;
+  --color-nreddark: #b03a30;
+  --color-nredtint: #f3c8c2;
+  --color-nblue: #3f7fd6;
+  --color-nbluedark: #2f62a8;
+  --color-nbluetint: #c3d7f2;
+
+  --color-mapbg: #a8a8a8;
+  --color-cellneutral: #f2ead8;
+  --color-cellstroke: #7c7668;
+  --color-badge: #f0b429;
+
+  --color-ngold: #f0b429;
+  --color-nincome: #35c46a;
+  --color-nhp: #4caf50;
+
+  --font-sans: var(--font-pretendard), "Pretendard", "Noto Sans KR", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-title: var(--font-audiowide), "Audiowide", var(--font-sans); /* 제목 전용 (font-title) */
+}
+
+html,
+body {
+  height: 100%;
+  /* 다크 크롬 — 화면 전환 중(루트가 opacity 0으로 시작) 비치는 바탕색.
+     밝은 mapbg면 전환마다 하얗게 번쩍인다. 맵 영역 배경은 각 화면이 직접 칠한다. */
+  background: var(--color-chrome);
+  color: #f2f3f5;
+}
+
+/* 슬라이더 공통 */
+input[type="range"] {
+  accent-color: #d9dadf;
+}
+
+/* 스크롤은 되지만 스크롤바는 감춤 (사이드 패널용) */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* 구형 Edge */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* 화면/패널 진입 전환 */
+@keyframes screenIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* fill은 backwards — forwards 채움은 애니메이션 종료 후에도 opacity:1을 캐스케이드
+   최상위에 고정해서 disabled:opacity-* 나 인라인 opacity를 영구히 덮어버린다 */
+.screen-enter {
+  animation: screenIn 0.34s cubic-bezier(0.22, 0.9, 0.34, 1) backwards;
+}
+
+/* 시작 화면 메뉴 행 — 왼쪽에서 스태거 슬라이드인 (animation-delay로 시차) */
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.row-enter {
+  animation: rowIn 0.38s cubic-bezier(0.22, 0.9, 0.34, 1) backwards;
+}
+
+/* 설정 패널 — 오른쪽에서 슬라이드인 (메뉴→설정 레이어 전환) */
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.panel-enter {
+  animation: panelIn 0.3s cubic-bezier(0.22, 0.9, 0.34, 1) backwards;
+}
+
+/* 커스텀 드롭다운 패널 등장 */
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.dropdown-enter {
+  animation: dropIn 0.14s ease-out;
+}
+
+/* 시작 화면 Voronoi 배경 — 목표 투명도(0.055)까지만 서서히 (여기선 both가 의도) */
+@keyframes backdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.055;
+  }
+}
+.backdrop-enter {
+  animation: backdropIn 0.9s ease-out both;
+}
