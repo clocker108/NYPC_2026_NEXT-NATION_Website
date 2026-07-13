@@ -22,7 +22,7 @@ try {
   code =
     spawnSync("npx", ["next", "build"], {
       stdio: "inherit",
-      env: { ...process.env, STATIC_EXPORT: "1" },
+      env: { ...process.env, STATIC_EXPORT: "1", NEXT_TELEMETRY_DISABLED: "1" },
     }).status ?? 1;
 } finally {
   if (hadApi) await rename(ASIDE, API);
