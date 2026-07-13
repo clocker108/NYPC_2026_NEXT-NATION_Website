@@ -3,6 +3,7 @@
 import type { TurnEvents } from "./events";
 import type { GameState } from "./types";
 import { hqOf } from "./state";
+import { projectedWorkIncome } from "./turn";
 
 export interface DayStats {
   warriors: [number, number];
@@ -48,7 +49,12 @@ export function computeStats(states: GameState[], events: TurnEvents[]): DayStat
     const base = statsForState(states[d]);
     out.push({
       ...base,
-      income: d > 0 && d - 1 < events.length ? events[d - 1].incomeTotal : [0, 0],
+      // d>0: 그 날 실제 벌어들인 노동 수입. day 0(및 이벤트 없는 선두 상태): 초기
+      // 위치가 벌어들일 수입을 투영해 표시(시작 시 본부 3전사 → +15).
+      income:
+        d > 0 && d - 1 < events.length
+          ? events[d - 1].incomeTotal
+          : projectedWorkIncome(states[d]),
       cumIncome: [...cumIncome],
       cumSpent: [...cumSpent],
       cumWarriors: [...cumWarriors],
