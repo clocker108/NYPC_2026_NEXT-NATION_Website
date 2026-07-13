@@ -8,7 +8,7 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: readonly ChangelogEntry[] = [
-  { version: "v1.0.1-beta", notes: ["첫 턴에서 수입이 0으로 뜨는 버그 수정"] },
+  { version: "v1.0.2-beta", notes: ["첫 턴에서 수입이 0으로 뜨는 버그 수정", "앱 버전 및 업데이트 내용 표시 기능 추가"] },
 ];
 
 export const APP_VERSION = CHANGELOG[0].version;
