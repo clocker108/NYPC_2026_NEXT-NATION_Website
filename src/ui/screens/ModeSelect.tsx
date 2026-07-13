@@ -15,6 +15,8 @@ import LoadingOverlay from "@/ui/LoadingOverlay";
 import ShapesLoader from "@/ui/ShapesLoader";
 import SoundToggles from "@/ui/SoundToggles";
 import RulesOverlay from "@/ui/RulesOverlay";
+import UpdatesDialog from "@/ui/UpdatesDialog";
+import { APP_VERSION } from "@/changelog";
 import { soundManager } from "@/audio/soundManager";
 import { generateMap } from "@/engine/mapgen";
 import { computeCellPolygons, CLIP_RADIUS, type Polygon } from "@/engine/voronoi";
@@ -325,6 +327,7 @@ export default function ModeSelect() {
 
   // 기본 모드에서 인터넷 대전 서버(worker) 생존 확인 — 미발견이면 안내 후 ?local로 재시작
   const [showRules, setShowRules] = useState(false);
+  const [showUpdates, setShowUpdates] = useState(false);
   const [serverGone, setServerGone] = useState(false);
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has("local")) return;
@@ -917,6 +920,7 @@ export default function ModeSelect() {
 
       {/* 게임 규칙 오버레이 */}
       {showRules && <RulesOverlay onClose={() => setShowRules(false)} />}
+      {showUpdates && <UpdatesDialog onClose={() => setShowUpdates(false)} />}
 
       {/* 인터넷 대전 서버 미발견 — 안내 후 오프라인(?local) 모드로 재시작 */}
       {serverGone && (
@@ -958,12 +962,24 @@ export default function ModeSelect() {
       {/* 로딩 커튼 — 배경이 살짝 비치는 반투명 + 도형 애니메이션. 봇 소환은 취소 가능 */}
       <LoadingOverlay open={loading} message={loadingMsg} onCancel={cancellable ? () => goView("menu") : undefined} />
 
-      {/* 우하단: 사운드 텍스트 토글 + 오프라인(?local) 모드 ↔ 기본 모드 전환 */}
-      <div ref={cornerRef} className="fixed bottom-3 right-4 z-10 flex items-center gap-4" style={intro ? { opacity: 0 } : undefined}>
-        <SoundToggles />
-        <a href={isLocal ? "/" : "/?local"} className="text-xs text-chromedim/70 transition hover:text-white">
-          {isLocal ? "기본 모드로 돌아가기" : "로컬 모드로 전환"}
-        </a>
+      {/* 우하단: (위)버전 + 업데이트 내용 · (아래)사운드 토글 + 오프라인(?local) ↔ 기본 모드 전환 */}
+      <div
+        ref={cornerRef}
+        className="fixed bottom-3 right-4 z-10 flex flex-col items-end gap-1.5"
+        style={intro ? { opacity: 0 } : undefined}
+      >
+        <div className="flex items-center gap-3 text-xs text-chromedim/60">
+          <span className="tabular-nums">{APP_VERSION}</span>
+          <button className="cursor-pointer transition hover:text-white" onClick={() => setShowUpdates(true)}>
+            업데이트 내용
+          </button>
+        </div>
+        <div className="flex items-center gap-4">
+          <SoundToggles />
+          <a href={isLocal ? "/" : "/?local"} className="text-xs text-chromedim/70 transition hover:text-white">
+            {isLocal ? "기본 모드로 돌아가기" : "로컬 모드로 전환"}
+          </a>
+        </div>
       </div>
 
       {/* 진행 중이던 인터넷 대전 재접속 안내 — 메시지 창으로 (?local 모드에서는 숨김) */}
