@@ -6,20 +6,22 @@ const isStatic = process.env.STATIC_EXPORT === "1";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  ...(isStatic ? { output: "export" as const } : {}),
   // Pyodide 봇 워커의 SharedArrayBuffer에는 cross-origin isolation이 필요.
-  // (정적 export에서는 headers()가 무시되므로 배포용은 public/_headers가 담당)
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
+  // - 정적 export(배포): headers()가 무시되므로 public/_headers가 담당 → 여기선 정의 안 함(export 경고 방지).
+  // - dev(비-static): 로컬에서도 COOP/COEP가 있어야 Pyodide가 되므로 headers()로 주입.
+  ...(isStatic
+    ? { output: "export" as const }
+    : {
+        headers: async () => [
+          {
+            source: "/:path*",
+            headers: [
+              { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+              { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
+            ],
+          },
         ],
-      },
-    ];
-  },
+      }),
 };
 
 export default nextConfig;
