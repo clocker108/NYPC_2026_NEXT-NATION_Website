@@ -1,0 +1,12 @@
+// 인터넷 대전 방 서버 — Cloudflare Worker + Durable Object (무료 티어).
+// 배포: npx wrangler deploy --config worker/wrangler.jsonc  (최초 1회 `wrangler login`)
+// 로컬: npm run worker:dev  →  ws://localhost:8787
+{
+  "name": "nextnation-online",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-01",
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RoomDO"] }],
+  "durable_objects": {
+    "bindings": [{ "name": "ROOMS", "class_name": "RoomDO" }]
+  }
+}
