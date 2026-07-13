@@ -341,8 +341,11 @@ function applyDaySiege(st: GameState, ev: TurnEvents, siegeDamage: Map<number, n
   for (const r of destroyed) st.buildings.delete(r);
 }
 
-function applyEveningWork(st: GameState, ev: TurnEvents): void {
+// 노동 판정 코어. ev가 있으면 실제 저녁 노동(골드 지급·이벤트 기록)을 수행하고,
+// ev가 null이면 상태를 건드리지 않고 각 진영이 벌어들일 수입만 계산한다(미리보기).
+function computeWork(st: GameState, ev: TurnEvents | null): [number, number] {
   const consumed = new Set<WKey>();
+  const income: [number, number] = [0, 0];
   const regions = [...st.buildings.keys()].sort((a, b) => a - b);
   for (const r of regions) {
     const b = st.buildings.get(r)!;
@@ -359,11 +362,24 @@ function applyEveningWork(st: GameState, ev: TurnEvents): void {
     if (take > 0) {
       const workers = eligible.slice(0, take);
       for (const k of workers) consumed.add(k);
-      st.gold[b.side] += WORK_INCOME * take;
-      ev.incomeTotal[b.side] += WORK_INCOME * take;
-      ev.incomes.push({ side: b.side, region: r, workers });
+      income[b.side] += WORK_INCOME * take;
+      if (ev) {
+        st.gold[b.side] += WORK_INCOME * take;
+        ev.incomeTotal[b.side] += WORK_INCOME * take;
+        ev.incomes.push({ side: b.side, region: r, workers });
+      }
     }
   }
+  return income;
+}
+
+function applyEveningWork(st: GameState, ev: TurnEvents): void {
+  computeWork(st, ev);
+}
+
+/** 지금 저녁 노동이 실행된다면 각 진영이 벌어들일 수입 (상태 불변, 헤더/차트 미리보기용). */
+export function projectedWorkIncome(st: GameState): [number, number] {
+  return computeWork(st, null);
 }
 
 function applyEveningUpkeep(st: GameState, ev: TurnEvents): void {
