@@ -27,5 +27,9 @@ describe("computeStats", () => {
     expect(stats[0].warriors).toEqual([3, 3]);
     expect(stats[0].gold).toEqual([500, 500]);
     expect(stats[0].hqHp).toEqual([10, 10]);
+    // day 0 수입은 초기 위치의 노동 투영값: 본부(workCap 1) × 3전사 → +15씩.
+    expect(stats[0].income).toEqual([15, 15]);
+    // day 0 누적 수입은 아직 0 (투영은 표시용, 실현 누적엔 미포함).
+    expect(stats[0].cumIncome).toEqual([0, 0]);
   });
 });
