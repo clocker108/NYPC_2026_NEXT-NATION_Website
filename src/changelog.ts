@@ -8,7 +8,7 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: readonly ChangelogEntry[] = [
-  { version: "v1.0.3-beta", notes: ["인터넷 대결 대기 BGM 소리 크기 수정"] },
+  { version: "v1.0.3-beta", notes: ["전반적인 BGM 노멀라이징화", "메인 화면에서 메뉴 위에 마우스를 올렸을때 발생하는 효과음이 과다한 현상 제거"] },
   { version: "v1.0.2-beta", notes: ["앱 버전 및 업데이트 내용 표시 기능 추가"] },
   { version: "v1.0.1-beta", notes: ["첫 턴에서 수입이 0으로 뜨는 버그 수정"] }
 ];

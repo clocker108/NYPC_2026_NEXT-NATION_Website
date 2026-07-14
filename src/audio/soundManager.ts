@@ -7,14 +7,23 @@ import {
   BGM_GAIN,
   SFX_FILES,
   SFX_GAIN,
+  SOUND_REV,
   effectiveBgmTrack,
   shouldPlaySfx,
   type BgmTrack,
   type SfxId,
 } from "./sounds";
+import { SOUND_HASHES } from "./soundHashes";
 import { useSoundStore } from "@/store/soundStore";
 
 const FADE_MS = 400;
+
+// 캐시버스팅 — 카탈로그 경로는 깨끗이 두고(테스트가 실파일로 검증) 로드 URL에만 내용 해시를 붙인다.
+// 파일이 바뀌면 해시가 바뀌어 그 파일만 정확히 리페치된다(해시 없으면 SOUND_REV로 폴백).
+const withRev = (path: string) => {
+  const stem = path.slice(path.lastIndexOf("/") + 1).replace(/\.[^.]+$/, "");
+  return `${path}?v=${SOUND_HASHES[stem] ?? SOUND_REV}`;
+};
 
 let ctx: AudioContext | null = null;
 let sfxGain: GainNode | null = null;
@@ -49,7 +58,7 @@ async function loadBuffer(id: SfxId) {
   if (!c || buffers.has(id) || loading.has(id)) return;
   loading.add(id);
   try {
-    const res = await fetch(SFX_FILES[id]);
+    const res = await fetch(withRev(SFX_FILES[id]));
     if (!res.ok) return;
     const buf = await c.decodeAudioData(await res.arrayBuffer());
     buffers.set(id, buf);
@@ -63,7 +72,7 @@ async function loadBuffer(id: SfxId) {
 function bgmEl(track: BgmTrack): HTMLAudioElement {
   let el = bgmEls.get(track);
   if (!el) {
-    el = new Audio(BGM_FILES[track]);
+    el = new Audio(withRev(BGM_FILES[track]));
     el.loop = true;
     el.preload = "auto";
     el.volume = 0;

@@ -9,6 +9,13 @@ import { spawnSync } from "node:child_process";
 
 const API = fileURLToPath(new URL("../app/api", import.meta.url));
 const ASIDE = fileURLToPath(new URL("../app/_api-excluded", import.meta.url));
+const HASHGEN = fileURLToPath(new URL("./gen-sound-hashes.mjs", import.meta.url));
+
+// 사운드 내용 해시를 최신 파일 기준으로 재생성(캐시버스팅) — 빌드 산출물에 인라인된다.
+if (spawnSync(process.execPath, [HASHGEN], { stdio: "inherit" }).status !== 0) {
+  console.error("gen-sound-hashes 실패");
+  process.exit(1);
+}
 
 if (existsSync(ASIDE)) {
   console.error("app/_api-excluded 가 이미 존재합니다 — 이전 빌드가 비정상 종료된 듯. 수동으로 복구하세요.");
