@@ -16,6 +16,11 @@ export type SfxId =
 
 export type BgmTrack = "menu" | "game" | "wait";
 
+// 사운드 에셋 캐시 리비전. 파일명이 항상 같아서(/sounds/x.mp3) mp3 내용을 바꿔 재배포해도
+// 브라우저·CDN이 옛 파일을 캐시해 그대로 들려준다 → soundManager가 로드 시 ?v=SOUND_REV를
+// 붙여 강제 리페치한다. **사운드 에셋을 재생성해 배포할 때마다 이 값을 올릴 것.**
+export const SOUND_REV = "20260714";
+
 export const SFX_FILES: Record<SfxId, string> = {
   "ui-hover": "/sounds/ui-hover.mp3",
   "ui-click": "/sounds/ui-click.mp3",
