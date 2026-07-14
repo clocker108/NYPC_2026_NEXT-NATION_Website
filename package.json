@@ -1,6 +1,6 @@
 {
   "name": "next-nation-web",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,7 +11,8 @@
     "build:static": "node scripts/build-static.mjs",
     "worker:dev": "wrangler dev --config worker/wrangler.jsonc --port 8787",
     "worker:deploy": "wrangler deploy --config worker/wrangler.jsonc",
-    "sounds:fetch": "node scripts/fetch-sounds.mjs"
+    "sounds:fetch": "node scripts/fetch-sounds.mjs",
+    "sounds:hash": "node scripts/gen-sound-hashes.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.2",
