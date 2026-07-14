@@ -58,9 +58,9 @@ export default function UpdatesDialog({ onClose }: { onClose: () => void }) {
         aria-label="업데이트 내용"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center gap-2">
+        <div className="mb-4 flex items-center gap-1">
           <span className="text-2xl">📢</span>
-          <h2 className="font-title text-lg text-white">업데이트 내용</h2>
+          <h2 className="font-semibold text-lg text-white">업데이트 내용</h2>
         </div>
 
         <div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
